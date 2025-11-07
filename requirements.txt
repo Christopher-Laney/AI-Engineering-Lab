@@ -1,0 +1,12 @@
+pandas
+numpy
+matplotlib
+scikit-learn
+jupyterlab
+transformers
+datasets
+accelerate
+torch
+# Optional:
+# tensorflow
+# openai
