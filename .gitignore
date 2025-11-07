@@ -1,0 +1,157 @@
+# ==========================================================
+# 🧠 AI-Engineering-Lab .gitignore
+# ----------------------------------------------------------
+# Tuned for: Jupyter notebooks, ML experiments, Python scripts,
+# and ethical AI tooling (AI Engineering Lab repository)
+# ==========================================================
+
+
+# ----------------------------
+# Python Bytecode & Build Artifacts
+# ----------------------------
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+*.manifest
+*.spec
+
+
+# ----------------------------
+# Virtual Environments
+# ----------------------------
+.venv/
+venv/
+env/
+ENV/
+.conda/
+*.env
+*.venv
+
+
+# ----------------------------
+# Jupyter Notebook Artifacts
+# ----------------------------
+.ipynb_checkpoints/
+*/.ipynb_checkpoints/*
+*.nbconvert.ipynb
+*.ipynb~
+*.bak
+
+
+# ----------------------------
+# Logs, Outputs, and Reports
+# ----------------------------
+logs/
+*.log
+outputs/
+reports/
+tmp/
+*.tmp
+*.out
+*.cache
+
+
+# ----------------------------
+# Datasets & Large Files
+# ----------------------------
+# Keep sample datasets for reference, ignore generated or large ones
+datasets/*.zip
+datasets/*.tar
+datasets/*.gz
+datasets/*.csv~
+datasets/temp/
+datasets/cache/
+datasets/*.bak
+
+# Allow small sample files
+!datasets/sample_prompts.csv
+!datasets/sentiment_training.json
+
+
+# ----------------------------
+# Models & Checkpoints
+# ----------------------------
+*.joblib
+*.pkl
+*.h5
+*.onnx
+*.bin
+models/
+checkpoints/
+
+
+# ----------------------------
+# Configuration, Secrets & Credentials
+# ----------------------------
+config/
+secrets/
+*.token
+*.key
+*.pem
+*.crt
+*.der
+*.jsonl
+api_keys.json
+.env
+.env.*
+.envrc
+
+
+# ----------------------------
+# IDE / Editor Specific
+# ----------------------------
+.vscode/
+.idea/
+*.swp
+*.swo
+*.tmp
+*.bak
+
+
+# ----------------------------
+# OS-Specific Junk
+# ----------------------------
+.DS_Store
+Thumbs.db
+desktop.ini
+ehthumbs.db
+$RECYCLE.BIN/
+
+
+# ----------------------------
+# Notebook / Experiment Artifacts
+# ----------------------------
+notebooks/.ipynb_checkpoints/
+notebooks/*-checkpoint.ipynb
+notebooks/*.nbconvert.ipynb
+
+
+# ----------------------------
+# Docs / Generated Media
+# ----------------------------
+docs/*.png~
+docs/*.svg~
+docs/*.bak
+docs/*.tmp
+docs/exports/
+docs/__pycache__/
+
+
+# ----------------------------
+# Allowlist (force-keep critical files)
+# ----------------------------
+!.gitignore
+!README.md
+!requirements.txt
+!LICENSE
+!docs/
+!scripts/
+!notebooks/
+!datasets/
