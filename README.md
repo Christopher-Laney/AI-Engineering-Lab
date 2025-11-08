@@ -1,4 +1,11 @@
 # 🧠 AI Engineering Lab
+<p align="center">
+  <img src="docs/banner.png" alt="AI Engineering Lab Banner" width="800">
+</p>
+
+![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)
+![Platform: PowerShell](https://img.shields.io/badge/Platform-PowerShell-blue)
+![Status: Active](https://img.shields.io/badge/Status-Active-success)
 
 A hands-on workspace for exploring the intersection of **AI engineering**, **prompt design**, **machine learning**, and **AI ethics**.  
 This repository combines practical scripts, research notebooks, and ethical evaluation tools for modern AI workflows.
