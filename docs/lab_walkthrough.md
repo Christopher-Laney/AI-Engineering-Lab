@@ -20,7 +20,22 @@ Expected result:
 - `outputs/generated_prompts.json`
 - `20` prompt records per topic by default after the per-topic cap
 
-## 2. Run A Bias Review
+## 2. Evaluate Prompt Quality
+
+Score the generated prompt batch before moving to downstream experiments:
+
+```bash
+python scripts/evaluate_prompts.py \
+  --input outputs/generated_prompts.json \
+  --output-base outputs/prompt_evaluation
+```
+
+Expected result:
+
+- `outputs/prompt_evaluation.json`
+- `outputs/prompt_evaluation.md`
+
+## 3. Run A Bias Review
 
 Use the sanitized sample review text to exercise the lexical bias detector:
 
@@ -42,7 +57,7 @@ Expected result:
 
 The sample rows are intentionally synthetic and compact. They are meant to demonstrate the review workflow, not to stand in for a production fairness dataset.
 
-## 3. Train The Sentiment Baseline
+## 4. Train The Sentiment Baseline
 
 Train the sample TF-IDF + Logistic Regression classifier:
 
@@ -59,7 +74,7 @@ Expected result:
 - `outputs/sentiment_model.joblib`
 - `outputs/sentiment_model_summary.json`
 
-## 4. Validate The Repo
+## 5. Validate The Repo
 
 Run the lightweight regression suite before changing scripts:
 
@@ -71,6 +86,7 @@ python -m unittest discover -s tests -v
 ## What This Demonstrates
 
 - prompt generation with deterministic examples
+- prompt comparison with a transparent deterministic rubric
 - responsible-AI review with traceable flagged rows and group metrics
 - a reproducible baseline training run with saved artifacts
 - a small local validation loop suitable for pull requests
