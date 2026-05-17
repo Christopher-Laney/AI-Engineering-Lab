@@ -4,7 +4,7 @@
 </p>
 
 ![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)
-![Platform: PowerShell](https://img.shields.io/badge/Platform-PowerShell-blue)
+![Platform: Python](https://img.shields.io/badge/Platform-Python-blue)
 ![Status: Active](https://img.shields.io/badge/Status-Active-success)
 
 A hands-on workspace for exploring the intersection of **AI engineering**, **prompt design**, **machine learning**, and **AI ethics**.  
@@ -79,6 +79,33 @@ pip install -r requirements.txt
 
 # Launch JupyterLab
 jupyter lab
+```
+
+Run the command-line experiments directly:
+
+```bash
+# Generate prompt variants from the sample topic list
+python scripts/generate_prompts.py \
+  --input datasets/sample_prompts.csv \
+  --output outputs/generated_prompts.json \
+  --with-metadata \
+  --dedupe
+
+# Train the sample sentiment model
+python scripts/train_model.py \
+  --data datasets/sentiment_training.json \
+  --model outputs/sentiment_model.joblib \
+  --summary outputs/sentiment_model_summary.json
+```
+
+## ✅ Validation
+
+Run the built-in test suite before changing scripts:
+
+```bash
+pip install -r requirements-test.txt
+python -m unittest discover -s tests -v
+```
 
 ---
 
