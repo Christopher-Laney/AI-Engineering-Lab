@@ -22,7 +22,7 @@ Examples
 import argparse, json, re, sys, os
 from pathlib import Path
 from collections import Counter, defaultdict
-from datetime import datetime
+from datetime import datetime, timezone
 
 import pandas as pd
 
@@ -158,6 +158,14 @@ def score_row(hits, category_caps=None):
 def safe_mkdir(path: Path):
     path.parent.mkdir(parents=True, exist_ok=True)
 
+def to_json_scalar(value):
+    """Convert pandas/numpy scalar values into JSON-friendly Python values."""
+    if pd.isna(value):
+        return None
+    if hasattr(value, "item"):
+        return value.item()
+    return value
+
 # ------------------------- Main -------------------------
 def main():
     ap = argparse.ArgumentParser(description="Lexical bias signal detector with reporting.")
@@ -219,7 +227,7 @@ def main():
 
         row_obj = {
             "index": int(idx),
-            "id": df[args.id_col].iloc[idx] if args.id_col and args.id_col in df.columns else None,
+            "id": to_json_scalar(df[args.id_col].iloc[idx]) if args.id_col and args.id_col in df.columns else None,
             "text": text,
             "score": score,
             "per_category": per_cat,
@@ -247,7 +255,7 @@ def main():
             f = int(flagged_by_group.get(grp, 0))
             rate = float(f) / float(total) if total else 0.0
             group_stats.append({
-                "group": None if pd.isna(grp) else grp,
+                "group": to_json_scalar(grp),
                 "total": int(total),
                 "flagged": int(f),
                 "flag_rate": round(rate, 4)
@@ -255,7 +263,7 @@ def main():
 
     # Build summary
     summary = {
-        "generated_at_utc": datetime.utcnow().isoformat() + "Z",
+        "generated_at_utc": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
         "source_csv": str(Path(args.data).resolve()),
         "rows": int(len(df)),
         "text_col": args.text_col,

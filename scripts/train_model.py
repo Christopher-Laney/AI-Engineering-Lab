@@ -150,7 +150,7 @@ def main(data_path, model_path, summary_path, test_size, val_size, seed, ngram_m
     run_id = str(uuid.uuid4())
     summary = {
         "run_id": run_id,
-        "timestamp_utc": pd.Timestamp.utcnow().isoformat() + "Z",
+        "timestamp_utc": pd.Timestamp.now(tz="UTC").isoformat().replace("+00:00", "Z"),
         "data_path": str(data_path),
         "rows": int(len(df)),
         "class_dist": {int(k): int(v) for k, v in pd.Series(y).value_counts().to_dict().items()},
