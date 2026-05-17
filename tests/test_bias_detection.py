@@ -35,3 +35,13 @@ class BiasDetectionTests(unittest.TestCase):
 
         self.assertEqual(score, 4.0)
         self.assertEqual(per_category["gender"], 4.0)
+
+    def test_sample_bias_dataset_is_available_for_walkthrough(self):
+        sample_path = bias_detection.Path("datasets/sample_bias_texts.csv")
+
+        self.assertTrue(sample_path.exists())
+
+    def test_to_json_scalar_converts_numpy_backed_values(self):
+        import numpy as np
+
+        self.assertEqual(bias_detection.to_json_scalar(np.int64(7)), 7)

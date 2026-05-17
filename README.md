@@ -98,6 +98,8 @@ python scripts/train_model.py \
   --summary outputs/sentiment_model_summary.json
 ```
 
+For one compact path through prompt generation, bias review, and sentiment training, see [docs/lab_walkthrough.md](docs/lab_walkthrough.md).
+
 ## ✅ Validation
 
 Run the built-in test suite before changing scripts:

@@ -72,6 +72,7 @@ datasets/*.bak
 
 # Allow small sample files
 !datasets/sample_prompts.csv
+!datasets/sample_bias_texts.csv
 !datasets/sentiment_training.json
 
 
