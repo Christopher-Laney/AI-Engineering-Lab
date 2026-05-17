@@ -21,7 +21,7 @@ Examples:
     --search --ngram-max 2 --min-df 2 --class-weight balanced --seed 42
 """
 
-import argparse, json, os, sys, uuid
+import argparse, hashlib, json, os, sys, uuid
 from pathlib import Path
 
 import numpy as np
@@ -49,6 +49,32 @@ def load_json_dataset(path: Path, jsonl: bool = False):
         return pd.DataFrame({"text": payload["text"], "label": payload["label"]})
     raise ValueError("Unsupported JSON format. Expect keys: 'text' and 'label'.")
 
+def validate_dataset(df: pd.DataFrame):
+    """Validate the minimum contract needed for stratified binary classification."""
+    missing = {"text", "label"} - set(df.columns)
+    if missing:
+        raise ValueError(f"Dataset is missing required column(s): {', '.join(sorted(missing))}.")
+
+    cleaned = df.dropna(subset=["text", "label"]).copy()
+    cleaned["text"] = cleaned["text"].astype(str)
+    cleaned["label"] = cleaned["label"].astype(int)
+
+    if cleaned.empty:
+        raise ValueError("Dataset contains no usable rows after dropping missing text/label values.")
+
+    labels = sorted(cleaned["label"].unique().tolist())
+    if labels != [0, 1]:
+        raise ValueError("Dataset must contain binary labels 0 and 1.")
+
+    class_counts = cleaned["label"].value_counts().to_dict()
+    if min(class_counts.values()) < 2:
+        raise ValueError("Each class must contain at least 2 rows for stratified splitting.")
+
+    return cleaned
+
+def sha256_file(path: Path):
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
 
 def main(data_path, model_path, summary_path, test_size, val_size, seed, ngram_max,
          min_df, max_features, class_weight, C, penalty, solver, lowercase, stop_words,
@@ -60,9 +86,7 @@ def main(data_path, model_path, summary_path, test_size, val_size, seed, ngram_m
         sys.exit(f"Data not found: {data_path}")
 
     # Load
-    df = load_json_dataset(data_path, jsonl=False)
-    df = df.dropna(subset=["text", "label"])
-    df["text"] = df["text"].astype(str)
+    df = validate_dataset(load_json_dataset(data_path, jsonl=False))
     y = df["label"].astype(int).values
     X = df["text"].values
 
@@ -152,6 +176,7 @@ def main(data_path, model_path, summary_path, test_size, val_size, seed, ngram_m
         "run_id": run_id,
         "timestamp_utc": pd.Timestamp.now(tz="UTC").isoformat().replace("+00:00", "Z"),
         "data_path": str(data_path),
+        "data_sha256": sha256_file(data_path),
         "rows": int(len(df)),
         "class_dist": {int(k): int(v) for k, v in pd.Series(y).value_counts().to_dict().items()},
         "splits": {
