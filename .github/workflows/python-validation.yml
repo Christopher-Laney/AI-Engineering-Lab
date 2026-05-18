@@ -35,5 +35,8 @@ jobs:
       - name: Check dataset catalog freshness
         run: python scripts/catalog_datasets.py --dataset-dir datasets --output docs/dataset_catalog.md --check
 
+      - name: Validate notebooks
+        run: python scripts/validate_notebooks.py --notebook-dir notebooks
+
       - name: Run lab smoke test
         run: python scripts/run_lab_workflow.py --output-dir outputs/ci_lab_run --skip-training
