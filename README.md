@@ -107,6 +107,7 @@ python scripts/train_model.py \
 ```
 
 For one compact path through prompt generation, bias review, and sentiment training, see [docs/lab_walkthrough.md](docs/lab_walkthrough.md).
+For sample dataset schemas, row counts, and fingerprints, see [docs/dataset_catalog.md](docs/dataset_catalog.md).
 For prompt-batch scoring guidance, see [docs/prompt_evaluation.md](docs/prompt_evaluation.md).
 For the training data contract, run metadata, and baseline limitations, see [docs/model_baseline.md](docs/model_baseline.md).
 
