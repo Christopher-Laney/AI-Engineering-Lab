@@ -87,6 +87,9 @@ Run the command-line experiments directly:
 # Run the full no-API lab workflow
 python scripts/run_lab_workflow.py --output-dir outputs/lab_run
 
+# Preview workflow commands and artifacts without running them
+python scripts/run_lab_workflow.py --output-dir outputs/lab_run --dry-run
+
 # Summarize the completed run
 python scripts/summarize_lab_run.py \
   --manifest outputs/lab_run/manifest.json \

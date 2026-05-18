@@ -1,7 +1,9 @@
 import json
 import tempfile
 import unittest
+from io import StringIO
 from pathlib import Path
+from unittest.mock import patch
 
 from scripts import run_lab_workflow
 
@@ -56,3 +58,29 @@ class RunLabWorkflowTests(unittest.TestCase):
 
             with self.assertRaisesRegex(FileNotFoundError, "Expected artifact"):
                 run_lab_workflow.validate_artifacts([missing])
+
+    def test_build_plan_serializes_commands_and_artifacts(self):
+        steps = run_lab_workflow.build_steps("python", Path("outputs/lab_run"), skip_training=True)
+
+        plan = run_lab_workflow.build_plan(steps)
+
+        self.assertEqual(plan[0]["name"], "generate_prompts")
+        self.assertEqual(plan[0]["command"][0], "python")
+        self.assertIn("outputs/lab_run/generated_prompts.json", plan[0]["artifacts"])
+
+    def test_print_plan_lists_commands_and_artifacts(self):
+        plan = [
+            {
+                "name": "generate_prompts",
+                "command": ["python", "scripts/generate_prompts.py"],
+                "artifacts": ["outputs/lab_run/generated_prompts.json"],
+            }
+        ]
+
+        with patch("sys.stdout", new_callable=StringIO) as stdout:
+            run_lab_workflow.print_plan(plan)
+
+        output = stdout.getvalue()
+        self.assertIn("Lab workflow dry run", output)
+        self.assertIn("command: python scripts/generate_prompts.py", output)
+        self.assertIn("outputs/lab_run/generated_prompts.json", output)

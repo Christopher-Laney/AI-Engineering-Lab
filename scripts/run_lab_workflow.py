@@ -151,6 +151,28 @@ def validate_artifacts(paths: list[Path]):
     return artifacts
 
 
+def build_plan(steps: list[dict]):
+    return [
+        {
+            "name": step["name"],
+            "command": step["command"],
+            "artifacts": [str(path) for path in step["artifacts"]],
+        }
+        for step in steps
+    ]
+
+
+def print_plan(plan: list[dict]):
+    print("Lab workflow dry run. Planned steps:")
+    for index, step in enumerate(plan, start=1):
+        print(f"{index}. {step['name']}")
+        print(f"   command: {' '.join(step['command'])}")
+        if step["artifacts"]:
+            print("   artifacts:")
+            for artifact in step["artifacts"]:
+                print(f"   - {artifact}")
+
+
 def write_manifest(path: Path, results: list[dict]):
     path.parent.mkdir(parents=True, exist_ok=True)
     payload = {
@@ -167,12 +189,17 @@ def main():
     parser.add_argument("--output-dir", default="outputs/lab_run", help="Directory for workflow artifacts.")
     parser.add_argument("--manifest", default=None, help="Path to write the run manifest JSON.")
     parser.add_argument("--skip-training", action="store_true", help="Run prompt and bias steps without model training.")
+    parser.add_argument("--dry-run", action="store_true", help="Print planned steps and artifacts without running commands.")
     args = parser.parse_args()
 
     root = repo_root()
     output_dir = Path(args.output_dir)
     manifest_path = Path(args.manifest) if args.manifest else output_dir / "manifest.json"
     steps = build_steps(sys.executable, output_dir, skip_training=args.skip_training)
+
+    if args.dry_run:
+        print_plan(build_plan(steps))
+        return
 
     results = []
     for step in steps:
