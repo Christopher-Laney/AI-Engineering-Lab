@@ -20,6 +20,14 @@ Expected result:
 
 The manifest records each step, captured command output, and whether every expected artifact was created.
 
+Generate a readable summary from the completed run:
+
+```bash
+python scripts/summarize_lab_run.py \
+  --manifest outputs/lab_run/manifest.json \
+  --output outputs/lab_run/summary.md
+```
+
 ## 1. Generate Prompt Variants
 
 Create structured prompt examples from the sample topic list:
