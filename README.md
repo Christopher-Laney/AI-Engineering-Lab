@@ -87,6 +87,11 @@ Run the command-line experiments directly:
 # Run the full no-API lab workflow
 python scripts/run_lab_workflow.py --output-dir outputs/lab_run
 
+# Summarize the completed run
+python scripts/summarize_lab_run.py \
+  --manifest outputs/lab_run/manifest.json \
+  --output outputs/lab_run/summary.md
+
 # Generate prompt variants from the sample topic list
 python scripts/generate_prompts.py \
   --input datasets/sample_prompts.csv \
