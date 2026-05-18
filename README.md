@@ -84,6 +84,9 @@ jupyter lab
 Run the command-line experiments directly:
 
 ```bash
+# Run the full no-API lab workflow
+python scripts/run_lab_workflow.py --output-dir outputs/lab_run
+
 # Generate prompt variants from the sample topic list
 python scripts/generate_prompts.py \
   --input datasets/sample_prompts.csv \
