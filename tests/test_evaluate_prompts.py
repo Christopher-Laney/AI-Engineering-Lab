@@ -30,16 +30,67 @@ class EvaluatePromptsTests(unittest.TestCase):
 
         self.assertEqual(scored["score"], 4)
         self.assertEqual(scored["grade"], "strong")
+        self.assertEqual(scored["recommendations"], [])
+
+    def test_score_prompt_recommends_missing_dimensions(self):
+        scored = evaluate_prompts.score_prompt({"prompt": "Explain caching."})
+
+        self.assertEqual(scored["grade"], "thin")
+        self.assertEqual(len(scored["recommendations"]), 4)
+        self.assertIn("Name the target audience", scored["recommendations"][2])
 
     def test_summarize_reports_grade_distribution(self):
         summary = evaluate_prompts.summarize(
             [
-                {"prompt": "a", "score": 4, "grade": "strong"},
-                {"prompt": "b", "score": 2, "grade": "usable"},
-                {"prompt": "c", "score": 1, "grade": "thin"},
+                {
+                    "prompt": "a",
+                    "score": 4,
+                    "grade": "strong",
+                    "rubric": {"specificity": 1, "structure": 1, "audience": 1, "evaluation_ready": 1},
+                    "recommendations": [],
+                },
+                {
+                    "prompt": "b",
+                    "score": 2,
+                    "grade": "usable",
+                    "rubric": {"specificity": 1, "structure": 1, "audience": 0, "evaluation_ready": 0},
+                    "recommendations": ["Name the target audience."],
+                },
+                {
+                    "prompt": "c",
+                    "score": 1,
+                    "grade": "thin",
+                    "rubric": {"specificity": 1, "structure": 0, "audience": 0, "evaluation_ready": 0},
+                    "recommendations": ["Ask for a clear output structure."],
+                },
             ]
         )
 
         self.assertEqual(summary["records"], 3)
         self.assertEqual(summary["average_score"], 2.333)
         self.assertEqual(summary["grades"], {"strong": 1, "thin": 1, "usable": 1})
+        self.assertEqual(summary["rubric_coverage"]["specificity"], 1.0)
+        self.assertEqual(summary["rubric_coverage"]["evaluation_ready"], 0.333)
+        self.assertEqual(summary["needs_attention"][0]["prompt"], "c")
+
+    def test_write_markdown_includes_recommendations(self):
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            report_path = Path(tmp_dir) / "report.md"
+            summary = evaluate_prompts.summarize(
+                [
+                    evaluate_prompts.score_prompt({"prompt": "Explain caching.", "topic": "Caching"}),
+                    evaluate_prompts.score_prompt(
+                        {
+                            "prompt": "Create a checklist for a junior dev. Include metrics.",
+                            "topic": "Caching",
+                        }
+                    ),
+                ]
+            )
+
+            evaluate_prompts.write_markdown(report_path, summary)
+            report = report_path.read_text(encoding="utf-8")
+
+        self.assertIn("## Rubric Coverage", report)
+        self.assertIn("## Needs Attention", report)
+        self.assertIn("Name the target audience", report)

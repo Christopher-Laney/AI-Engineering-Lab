@@ -46,10 +46,13 @@ Outputs:
 - `outputs/prompt_evaluation.json`
 - `outputs/prompt_evaluation.md`
 
+Reports include grade distribution, rubric coverage percentages, top prompts, and a short `Needs Attention` section with recommendations for prompts that missed one or more rubric dimensions.
+
 ## How To Use It
 
 - compare batches after changing templates
 - spot prompt families that are consistently thin
+- review missing-dimension recommendations before editing templates
 - keep prompt experiments reviewable before involving an LLM API
 
 This is a heuristic quality screen, not a substitute for task-grounded evaluation against real model outputs.
