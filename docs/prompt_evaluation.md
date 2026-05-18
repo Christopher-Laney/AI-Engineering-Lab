@@ -18,6 +18,7 @@ Grades are:
 - `thin`: score `0-1`
 
 The rubric is intentionally simple. It is meant for quick local comparison before introducing model calls, human review, or richer evaluation systems.
+The built-in prompt templates are designed to produce structured, audience-aware, evaluation-ready prompts by default, so generated batches start from a useful baseline before teams customize them.
 
 ## Example Workflow
 

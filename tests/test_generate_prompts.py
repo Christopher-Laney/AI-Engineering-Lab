@@ -2,7 +2,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from scripts import generate_prompts
+from scripts import evaluate_prompts, generate_prompts
 
 
 class GeneratePromptsTests(unittest.TestCase):
@@ -42,3 +42,24 @@ class GeneratePromptsTests(unittest.TestCase):
         values = generate_prompts.dedupe_keep_order(["a", "b", "a", "c", "b"])
 
         self.assertEqual(values, ["a", "b", "c"])
+
+    def test_builtin_templates_score_strong_with_default_metadata(self):
+        row = {
+            "topic": "prompt engineering",
+            "audience": "junior dev",
+            "style": "concise",
+            "domain": "AI",
+            "constraint": "no external APIs",
+        }
+
+        scored_prompts = [
+            evaluate_prompts.score_prompt(
+                {
+                    "prompt": generate_prompts.fill_template(template, row),
+                    "audience": row["audience"],
+                }
+            )
+            for template in generate_prompts.BUILTIN_TEMPLATES
+        ]
+
+        self.assertTrue(all(item["grade"] == "strong" for item in scored_prompts))

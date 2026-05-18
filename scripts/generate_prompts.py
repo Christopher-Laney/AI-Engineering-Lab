@@ -36,14 +36,14 @@ except Exception:
 
 # ------------------------- Built-in templates -------------------------
 BUILTIN_TEMPLATES = [
-    "Explain {topic} to a {audience} in a {style} style. Keep it {length}.",
-    "Create a step-by-step checklist to implement {topic} for {audience}. Include pitfalls and mitigations.",
-    "Summarize pros and cons of {topic} in exactly 5 bullets for a {audience}.",
-    "Provide a practical mini-guide to {topic} with sections: Overview, Use-Cases, Risks, Metrics. Keep tone {style}.",
-    "Draft a comparison: {topic} vs alternatives. Include selection criteria and decision matrix.",
-    "Design a quickstart for {topic} in the {domain} domain with constraints: {constraint}.",
-    "Give 3 common failure modes for {topic} and a mitigation plan for each, aimed at a {audience}.",
-    "Produce an outline to teach {topic} to a {audience}. Include assessment questions."
+    "Explain {topic} for a {audience} in a {style} style with sections for context, key ideas, risks, and metrics. Include one assessment question.",
+    "Create a step-by-step checklist to implement {topic} for a {audience}. Include pitfalls, mitigations, and success metrics.",
+    "Summarize pros and cons of {topic} in exactly 5 bullets for a {audience}. Include selection criteria and one risk to monitor.",
+    "Provide a practical mini-guide to {topic} for a {audience} with sections: Overview, Use-Cases, Risks, Metrics, and Assessment. Keep tone {style}.",
+    "Draft a comparison: {topic} vs alternatives for a {audience}. Include selection criteria, risks, and a decision matrix.",
+    "Design a quickstart for {topic} in the {domain} domain for a {audience} with constraints: {constraint}. Include sections for setup, risks, metrics, and validation.",
+    "Give 3 common failure modes for {topic} and a mitigation plan for each, for a {audience}. Include assessment criteria.",
+    "Produce an outline to teach {topic} for a {audience}. Include sections, assessment questions, risks, and success metrics."
 ]
 
 DEFAULT_STYLES = ["concise", "practical", "bullet", "checklist"]
