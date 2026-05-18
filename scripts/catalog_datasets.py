@@ -100,12 +100,24 @@ def main():
     parser = argparse.ArgumentParser(description="Generate a dataset catalog for bundled lab datasets.")
     parser.add_argument("--dataset-dir", default="datasets", help="Directory containing sample datasets.")
     parser.add_argument("--output", default="docs/dataset_catalog.md", help="Markdown catalog output path.")
+    parser.add_argument("--check", action="store_true", help="Fail if the existing catalog is stale.")
     args = parser.parse_args()
 
     catalog = build_catalog(Path(args.dataset_dir))
     output_path = Path(args.output)
+    rendered = render_markdown(catalog)
+
+    if args.check:
+        if not output_path.exists():
+            raise SystemExit(f"Dataset catalog is missing: {output_path}")
+        current = output_path.read_text(encoding="utf-8")
+        if current != rendered:
+            raise SystemExit(f"Dataset catalog is stale: {output_path}. Regenerate it before committing.")
+        print(f"Dataset catalog is up to date: {output_path}")
+        return
+
     output_path.parent.mkdir(parents=True, exist_ok=True)
-    output_path.write_text(render_markdown(catalog), encoding="utf-8")
+    output_path.write_text(rendered, encoding="utf-8")
     print(f"Dataset catalog written to {output_path}")
 
 

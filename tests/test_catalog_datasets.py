@@ -54,3 +54,10 @@ class CatalogDatasetsTests(unittest.TestCase):
         self.assertIn("# Dataset Catalog", markdown)
         self.assertIn("abc123", markdown)
         self.assertIn("synthetic or instructional", markdown)
+
+    def test_catalog_check_accepts_current_committed_catalog(self):
+        catalog = catalog_datasets.build_catalog(Path("datasets"))
+        rendered = catalog_datasets.render_markdown(catalog)
+        current = Path("docs/dataset_catalog.md").read_text(encoding="utf-8")
+
+        self.assertEqual(current, rendered)

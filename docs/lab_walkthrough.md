@@ -118,3 +118,11 @@ python -m unittest discover -s tests -v
 - a small local validation loop suitable for pull requests
 
 The bundled sample datasets are documented in `docs/dataset_catalog.md`.
+Check that the catalog matches the current dataset files with:
+
+```bash
+python scripts/catalog_datasets.py \
+  --dataset-dir datasets \
+  --output docs/dataset_catalog.md \
+  --check
+```
