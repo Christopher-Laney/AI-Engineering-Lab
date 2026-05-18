@@ -92,6 +92,11 @@ python scripts/summarize_lab_run.py \
   --manifest outputs/lab_run/manifest.json \
   --output outputs/lab_run/summary.md
 
+# Generate a model card from a completed training run
+python scripts/generate_model_card.py \
+  --summary outputs/lab_run/sentiment_model_summary.json \
+  --output outputs/lab_run/sentiment_model_card.md
+
 # Generate prompt variants from the sample topic list
 python scripts/generate_prompts.py \
   --input datasets/sample_prompts.csv \

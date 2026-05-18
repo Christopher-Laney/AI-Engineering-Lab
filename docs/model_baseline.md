@@ -40,6 +40,14 @@ Each summary JSON records:
 - selected parameters
 - test metrics and confusion matrix
 
+Generate a lightweight model card from a completed training summary:
+
+```bash
+python scripts/generate_model_card.py \
+  --summary outputs/sentiment_model_summary.json \
+  --output outputs/sentiment_model_card.md
+```
+
 Run the baseline with a fixed seed:
 
 ```bash
@@ -56,4 +64,5 @@ Because the bundled dataset is deliberately small, metrics may look weak or unst
 
 - confirm the training path runs
 - inspect the saved summary
+- generate a model card for review
 - use the baseline as a comparison point for richer datasets or later models
