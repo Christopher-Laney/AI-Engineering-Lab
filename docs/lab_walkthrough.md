@@ -2,6 +2,22 @@
 
 This walkthrough gives the repository one compact, no-API path from prompt generation to responsible-AI review to classical model training.
 
+## Run Everything
+
+Use the runner when you want to execute the whole local lab:
+
+```bash
+python scripts/run_lab_workflow.py --output-dir outputs/lab_run
+```
+
+Expected result:
+
+- generated prompt batch
+- prompt evaluation report
+- bias review report
+- sentiment baseline model and summary
+- `outputs/lab_run/manifest.json`
+
 ## 1. Generate Prompt Variants
 
 Create structured prompt examples from the sample topic list:
