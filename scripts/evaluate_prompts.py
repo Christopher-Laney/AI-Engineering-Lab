@@ -14,6 +14,12 @@ from pathlib import Path
 
 STRUCTURE_TERMS = ("checklist", "bullets", "sections", "outline", "matrix", "step-by-step")
 EVALUATION_TERMS = ("criteria", "metrics", "assessment", "risks", "pitfalls", "mitigations")
+DIMENSION_GUIDANCE = {
+    "specificity": "Add concrete constraints such as an exact count, required sections, or explicit inclusions.",
+    "structure": "Ask for a clear output structure such as a checklist, bullets, sections, outline, or matrix.",
+    "audience": "Name the target audience so the response can tune depth, tone, and examples.",
+    "evaluation_ready": "Request criteria, metrics, risks, assessment questions, pitfalls, or mitigations.",
+}
 
 
 def load_prompt_records(path: Path):
@@ -42,21 +48,36 @@ def score_prompt(record: dict):
         "evaluation_ready": int(any(token in lower for token in EVALUATION_TERMS)),
     }
     total = sum(dimensions.values())
+    recommendations = [
+        DIMENSION_GUIDANCE[name]
+        for name, passed in dimensions.items()
+        if not passed
+    ]
     return {
         **record,
         "rubric": dimensions,
         "score": total,
         "grade": "strong" if total >= 3 else "usable" if total >= 2 else "thin",
+        "recommendations": recommendations,
     }
 
 
 def summarize(scored_records):
     by_grade = Counter(record["grade"] for record in scored_records)
     avg_score = round(sum(record["score"] for record in scored_records) / max(1, len(scored_records)), 3)
+    total_records = max(1, len(scored_records))
+    rubric_coverage = {
+        dimension: round(
+            sum(record["rubric"][dimension] for record in scored_records) / total_records,
+            3,
+        )
+        for dimension in DIMENSION_GUIDANCE
+    }
     return {
         "records": len(scored_records),
         "average_score": avg_score,
         "grades": dict(sorted(by_grade.items())),
+        "rubric_coverage": rubric_coverage,
         "top_prompts": [
             {
                 "topic": record.get("topic"),
@@ -65,6 +86,17 @@ def summarize(scored_records):
                 "grade": record["grade"],
             }
             for record in sorted(scored_records, key=lambda row: (-row["score"], row["prompt"]))[:5]
+        ],
+        "needs_attention": [
+            {
+                "topic": record.get("topic"),
+                "prompt": record["prompt"],
+                "score": record["score"],
+                "grade": record["grade"],
+                "recommendations": record["recommendations"],
+            }
+            for record in sorted(scored_records, key=lambda row: (row["score"], row["prompt"]))[:5]
+            if record["recommendations"]
         ],
     }
 
@@ -84,10 +116,21 @@ def write_markdown(path: Path, summary: dict):
     for grade, count in summary["grades"].items():
         lines.append(f"| {grade} | {count} |")
 
+    lines += ["", "## Rubric Coverage", "", "| Dimension | Coverage |", "|---|---:|"]
+    for dimension, coverage in summary["rubric_coverage"].items():
+        lines.append(f"| {dimension.replace('_', ' ').title()} | {coverage:.1%} |")
+
     lines += ["", "## Top Prompts", ""]
     for record in summary["top_prompts"]:
         topic = record["topic"] or "Unlabeled"
         lines.append(f"- **{topic}** (`{record['score']}` / {record['grade']}): {record['prompt']}")
+
+    if summary["needs_attention"]:
+        lines += ["", "## Needs Attention", ""]
+        for record in summary["needs_attention"]:
+            topic = record["topic"] or "Unlabeled"
+            recommendation = " ".join(record["recommendations"])
+            lines.append(f"- **{topic}** (`{record['score']}` / {record['grade']}): {recommendation}")
 
     path.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
