@@ -105,19 +105,42 @@ def run_step(step: dict, root: Path):
         text=True,
         capture_output=True,
     )
+    artifacts = validate_artifacts(step["artifacts"])
     return {
         "name": step["name"],
         "command": step["command"],
         "stdout": completed.stdout.strip(),
         "stderr": completed.stderr.strip(),
-        "artifacts": [str(path) for path in step["artifacts"]],
+        "artifacts": artifacts,
     }
+
+
+def validate_artifacts(paths: list[Path]):
+    artifacts = []
+    missing = []
+    for path in paths:
+        exists = path.exists()
+        artifacts.append(
+            {
+                "path": str(path),
+                "exists": exists,
+                "bytes": path.stat().st_size if exists and path.is_file() else 0,
+            }
+        )
+        if not exists:
+            missing.append(str(path))
+
+    if missing:
+        raise FileNotFoundError(f"Expected artifact(s) were not created: {', '.join(missing)}")
+
+    return artifacts
 
 
 def write_manifest(path: Path, results: list[dict]):
     path.parent.mkdir(parents=True, exist_ok=True)
     payload = {
         "generated_at_utc": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
+        "status": "passed",
         "steps": results,
     }
     path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
