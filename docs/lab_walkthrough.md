@@ -16,6 +16,7 @@ Expected result:
 - prompt evaluation report
 - bias review report
 - sentiment baseline model and summary
+- sentiment baseline model card
 - `outputs/lab_run/manifest.json`
 
 The manifest records each step, captured command output, and whether every expected artifact was created.
@@ -99,6 +100,7 @@ Expected result:
 
 - `outputs/sentiment_model.joblib`
 - `outputs/sentiment_model_summary.json`
+- `outputs/sentiment_model_card.md` when the full runner is used
 
 ## 5. Validate The Repo
 

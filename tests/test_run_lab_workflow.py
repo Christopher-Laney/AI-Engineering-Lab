@@ -15,6 +15,7 @@ class RunLabWorkflowTests(unittest.TestCase):
             "evaluate_prompts",
             "bias_detection",
             "train_sentiment_baseline",
+            "generate_model_card",
         ])
         self.assertIn(Path("outputs/lab_run/generated_prompts.json"), steps[0]["artifacts"])
 
@@ -22,6 +23,7 @@ class RunLabWorkflowTests(unittest.TestCase):
         steps = run_lab_workflow.build_steps("python", Path("outputs/lab_run"), skip_training=True)
 
         self.assertNotIn("train_sentiment_baseline", [step["name"] for step in steps])
+        self.assertNotIn("generate_model_card", [step["name"] for step in steps])
 
     def test_write_manifest_records_steps(self):
         with tempfile.TemporaryDirectory() as tmp_dir:

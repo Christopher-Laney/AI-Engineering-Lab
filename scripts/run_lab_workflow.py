@@ -24,6 +24,7 @@ def build_steps(python_executable: str, output_dir: Path, skip_training: bool = 
     bias_base = output_dir / "sample_bias_report"
     model_path = output_dir / "sentiment_model.joblib"
     summary_path = output_dir / "sentiment_model_summary.json"
+    model_card_path = output_dir / "sentiment_model_card.md"
 
     steps = [
         {
@@ -91,6 +92,20 @@ def build_steps(python_executable: str, output_dir: Path, skip_training: bool = 
                     "42",
                 ],
                 "artifacts": [model_path, summary_path],
+            }
+        )
+        steps.append(
+            {
+                "name": "generate_model_card",
+                "command": [
+                    python_executable,
+                    "scripts/generate_model_card.py",
+                    "--summary",
+                    str(summary_path),
+                    "--output",
+                    str(model_card_path),
+                ],
+                "artifacts": [model_card_path],
             }
         )
 
