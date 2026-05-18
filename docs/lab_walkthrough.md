@@ -108,8 +108,7 @@ Run the lightweight regression suite before changing scripts:
 
 ```bash
 pip install -r requirements-test.txt
-python -m unittest discover -s tests -v
-python scripts/validate_notebooks.py --notebook-dir notebooks
+python scripts/validate_repo.py
 ```
 
 ## What This Demonstrates
