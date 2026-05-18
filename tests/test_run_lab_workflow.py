@@ -34,4 +34,23 @@ class RunLabWorkflowTests(unittest.TestCase):
             manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
 
         self.assertEqual(manifest["steps"][0]["name"], "generate_prompts")
+        self.assertEqual(manifest["status"], "passed")
         self.assertIn("generated_at_utc", manifest)
+
+    def test_validate_artifacts_reports_existing_files(self):
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            artifact = Path(tmp_dir) / "artifact.json"
+            artifact.write_text("{}", encoding="utf-8")
+
+            artifacts = run_lab_workflow.validate_artifacts([artifact])
+
+        self.assertEqual(artifacts[0]["path"], str(artifact))
+        self.assertTrue(artifacts[0]["exists"])
+        self.assertGreater(artifacts[0]["bytes"], 0)
+
+    def test_validate_artifacts_fails_for_missing_files(self):
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            missing = Path(tmp_dir) / "missing.json"
+
+            with self.assertRaisesRegex(FileNotFoundError, "Expected artifact"):
+                run_lab_workflow.validate_artifacts([missing])

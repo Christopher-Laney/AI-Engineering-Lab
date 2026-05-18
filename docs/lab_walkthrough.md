@@ -18,6 +18,8 @@ Expected result:
 - sentiment baseline model and summary
 - `outputs/lab_run/manifest.json`
 
+The manifest records each step, captured command output, and whether every expected artifact was created.
+
 ## 1. Generate Prompt Variants
 
 Create structured prompt examples from the sample topic list:
