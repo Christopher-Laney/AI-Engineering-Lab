@@ -116,3 +116,5 @@ python -m unittest discover -s tests -v
 - responsible-AI review with traceable flagged rows and group metrics
 - a reproducible baseline training run with saved artifacts
 - a small local validation loop suitable for pull requests
+
+The bundled sample datasets are documented in `docs/dataset_catalog.md`.
